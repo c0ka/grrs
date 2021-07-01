@@ -28,6 +28,22 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
+pub struct IterMut<'a, T> {
+    next: Option<&'a mut Node<T>>,
+}
+
+impl<'a, T> Iterator for IterMut<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        // take out the Option<&mut Node<T>>
+        self.next.take().map(|node| {
+            self.next = node.next.as_deref_mut();
+            &mut node.elem
+        })
+    }
+}
+
 /// linked stack with head attribute pointing to it's top.
 /// because the stack maybe be null, so we should use Option
 pub struct List<T> {
@@ -87,6 +103,10 @@ impl<T> List<T> {
         // that's deref the Box and return &Node.
         Iter { next: self.head.as_deref() }
     }
+
+    pub fn iter_mut(&mut self) -> IterMut<T> {
+        IterMut { next: self.head.as_deref_mut() }
+    }
 }
 
 impl<T> Drop for List<T> {
@@ -98,8 +118,6 @@ impl<T> Drop for List<T> {
         }
     }
 }
-
-
 
 
 #[cfg(test)]
@@ -173,6 +191,16 @@ mod test {
         assert_eq!(iter2.next(), Some(&1));
     }
 
+    #[test]
+    fn iter_mut() {
+        let mut list = List::new();
+        list.push(1); list.push(2); list.push(3);
+
+        let mut iter_mut1 = list.iter_mut();
+        assert_eq!(iter_mut1.next(), Some(&mut 3));
+        assert_eq!(iter_mut1.next(), Some(&mut 2));
+        assert_eq!(iter_mut1.next(), Some(&mut 1));
+    }
 
 }
 

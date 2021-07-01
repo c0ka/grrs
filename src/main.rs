@@ -1,9 +1,11 @@
 use std::path::PathBuf;
 use structopt::StructOpt;
 
+// this is how we use lib.rs
 use grrs::type_of;
 
-mod utils;
+mod single_linked;
+mod persis_linked;
 
 /// example:
 /// grrs ./ --pattern test1
