@@ -40,6 +40,19 @@ impl<T> List<T> {
     }
 }
 
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut head = self.head.take();
+        while let Some(node) = head {
+            if let Ok(mut node) = Rc::try_unwrap(node) {
+                head = node.next.take();
+            } else {
+                break;
+            }
+        }
+    }
+}
+
 pub struct Iter<'a, T> {
     next: Option<&'a Node<T>>,
 }
@@ -78,6 +91,18 @@ mod test {
 
         let list = list.tail();
         assert_eq!(list.head(), None);
+    }
+
+    #[test]
+    fn advanced() {
+        let list1 : List<i32> = List::new().append(1);
+        let list2 = list1.append(2);
+        let list3 = list1.append(3);
+
+        assert_eq!(list2.head(),Some(&2));
+        assert_eq!(list2.tail().head(),Some(&1));
+        assert_eq!(list3.head(),Some(&3));
+        assert_eq!(list3.tail().head(),Some(&1));
     }
 
     #[test]
