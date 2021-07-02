@@ -11,6 +11,7 @@ struct Node<T> {
     next: Link<T>,
 }
 
+#[allow(dead_code)]
 impl<T> List<T> {
     fn new() -> Self {
         List { head: None, }

@@ -6,6 +6,7 @@ use grrs::type_of;
 
 mod single_linked;
 mod persis_linked;
+mod deque_linked;
 
 /// example:
 /// grrs ./ --pattern test1
