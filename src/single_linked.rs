@@ -1,5 +1,86 @@
 use std::mem;
 
+
+/// One-direction linked stack with a head attribute pointing to it's latest aka top node.
+pub struct List<T> {
+    head: Link<T>,
+}
+
+/// Pointer to the next node or a None value.
+/// This is a Box type pointer, so it can be fixed length.
+type Link<T> = Option<Box<Node<T>>>;
+
+/// Node of stack, including a element and a pointer to the previous node.
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
+}
+
+#[allow(dead_code)]
+impl<T> List<T> {
+    /// Construct a List without node attached, so the head pointer is None.
+    pub fn new() -> Self {
+        List { head: None }
+    }
+
+    pub fn peek(&self) -> Option<&T> {
+        // create a new Option<&Box<Node>>, and map the it's content which is &Box<Node>.
+        // Notice the auto deref when evaluating the node's elem.
+        self.head.as_ref().map(|node| {
+            &node.elem
+        })
+    }
+
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|node| {
+            &mut node.elem
+        })
+    }    
+
+    /// Create a new node with its next attr pointing to the list's head's value.
+    /// Change the list's head pointing to the new created node.
+    pub fn push(&mut self, elem: T) {
+        let new_node = Node {
+            elem: elem, 
+            // Takes the option value(Link<T>) out, leaving a None in its place.
+            next: self.head.take(),
+        };
+        self.head = Some(Box::new(new_node));
+    }
+
+    pub fn pop(&mut self) -> Option<T> {
+        // node.next is moved here
+        self.head.take().map(|node| {
+            self.head = node.next;
+            node.elem
+        })
+    }
+
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+
+    pub fn iter(&self) -> Iter<T> {
+        // head is an Option wrap the Box pointing to Node, as_deref() will deref the Option's content
+        // that's deref the Box and return &Node.
+        Iter { next: self.head.as_deref() }
+    }
+
+    pub fn iter_mut(&mut self) -> IterMut<T> {
+        IterMut { next: self.head.as_deref_mut() }
+    }
+}
+
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut cur_link = self.head.take();
+
+        while let Some(mut boxed_node) = cur_link {
+            cur_link = mem::replace(&mut boxed_node.next, None);
+        }
+    }
+}
+
 pub struct IntoIter<T>(List<T>);
 
 impl<T> Iterator for IntoIter<T> {
@@ -44,81 +125,6 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-/// linked stack with head attribute pointing to it's top.
-/// because the stack maybe be null, so we should use Option
-pub struct List<T> {
-    head: Link<T>,
-}
-
-type Link<T> = Option<Box<Node<T>>>;
-
-/// the node of stack, including a value and a pointer to the below one
-struct Node<T> {
-    elem: T,
-    next: Link<T>,
-}
-
-#[allow(dead_code)]
-impl<T> List<T> {
-    pub fn new() -> Self {
-        List { head: None }
-    }
-
-    pub fn peek(&self) -> Option<&T> {
-        // creat a new Option<&Box<Node>>, and map the it's content with the ref of node's elem
-        // which is an Option<&elem>. notice the auto deref of the outer Box.
-        self.head.as_ref().map(|node| {
-            &node.elem
-        })
-    }
-
-    pub fn peek_mut(&mut self) -> Option<&mut T> {
-        self.head.as_mut().map(|node| {
-            &mut node.elem
-        })
-    }    
-
-    pub fn push(&mut self, elem: T) {
-        let new_node = Box::new(Node {
-            elem: elem, 
-            // takes the value out and replace the origin with a None
-            next: self.head.take(),
-        });
-        self.head = Some(new_node);
-    }
-
-    pub fn pop(&mut self) -> Option<T> {
-        self.head.take().map(|node| {
-            self.head = node.next;
-            node.elem
-        })
-    }
-
-    pub fn into_iter(self) -> IntoIter<T> {
-        IntoIter(self)
-    }
-
-    pub fn iter(&self) -> Iter<T> {
-        // head is an Option wrap the Box pointing to Node, as_deref() will deref the Option's content
-        // that's deref the Box and return &Node.
-        Iter { next: self.head.as_deref() }
-    }
-
-    pub fn iter_mut(&mut self) -> IterMut<T> {
-        IterMut { next: self.head.as_deref_mut() }
-    }
-}
-
-impl<T> Drop for List<T> {
-    fn drop(&mut self) {
-        let mut cur_link = self.head.take();
-
-        while let Some(mut boxed_node) = cur_link {
-            cur_link = mem::replace(&mut boxed_node.next, None);
-        }
-    }
-}
-
 
 #[cfg(test)]
 mod test {
@@ -129,6 +135,7 @@ mod test {
         let mut list = List::new();
 
         assert_eq!(list.pop(), None);
+        assert_eq!(list.peek(), None);
 
         list.push(1);
         list.push(2);

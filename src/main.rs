@@ -2,11 +2,7 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 // this is how we use lib.rs
-use grrs::type_of;
-
-mod single_linked;
-mod persis_linked;
-mod deque_linked;
+use grrs::{type_of, List};
 
 /// example:
 /// grrs ./ --pattern test1
@@ -27,6 +23,7 @@ struct Cli {
 
 fn main() {
     let args = Cli::from_args();
+    let _list :List<i32> = List::new();
 
     println!("Hello, world! for {:?}", args);
     println!("type of args is: {:?}", type_of(args));
