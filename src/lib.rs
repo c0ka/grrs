@@ -4,6 +4,8 @@ pub use single_linked::List;
 mod single_linked;
 mod persis_linked;
 mod deque_linked;
+mod unsafe_linked;
+mod vec_list;
 
 /// Check the type of a value
 pub fn type_of<T>(_: T) -> &'static str {
