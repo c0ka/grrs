@@ -12,6 +12,7 @@ pub struct List<T> {
     tail: Link<T>,
 }
 
+/// Rc+RefCell 多重所有权+可变引用
 type Link<T> = Option<Rc<RefCell<Node<T>>>>;
 
 struct Node<T> {

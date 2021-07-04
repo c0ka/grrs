@@ -21,6 +21,8 @@ impl<T> List<T> {
         List {
             head: Some(Rc::new(Node {
                 elem: elem,
+                // Option<T> impl the Clone trait, evaluating <T>.clone() when it's Some<T>
+                // which is Rc<Node<T>> here.
                 next: self.head.clone(),
             }))
         }
