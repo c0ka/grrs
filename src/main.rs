@@ -1,30 +1,28 @@
-use std::path::PathBuf;
-use structopt::StructOpt;
+use std::io::{BufReader, BufRead};
+use std::fs;
 
 // this is how we use lib.rs
-use grrs::{type_of, List};
+use grrs::{type_of, Cli};
+use structopt::StructOpt;
 
 /// example:
 /// grrs ./ --pattern test1
-#[derive(Debug, StructOpt)]
-#[structopt(name="grrs example", about="An example for command line app.")]
-struct Cli {
-    /// the pattern to look for
-    #[structopt(short, long)]
-    pattern: String,
 
-    /// the path to the file to read
-    #[structopt(parse(from_os_str))]
-    path: PathBuf,
-
-    #[structopt(short, long, parse(from_os_str), default_value="./")]
-    output: PathBuf,
-}
-
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::from_args();
-    let _list :List<i32> = List::new();
+
+    let content = fs::File::open(&args.path)?;
+        // .expect("could not read file");
+    let reader = BufReader::new(content);
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.contains(&args.pattern) {
+            println!("{}", line);
+        }
+    }
 
     println!("Hello, world! for {:?}", args);
     println!("type of args is: {:?}", type_of(args));
+    Ok(())
 }

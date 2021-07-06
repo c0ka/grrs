@@ -1,13 +1,23 @@
-use std::any::{type_name};
-pub use single_linked::List;
 
-mod single_linked;
-mod persis_linked;
-mod deque_linked;
-mod unsafe_linked;
-mod vec_list;
+use std::path::PathBuf;
+use structopt::StructOpt;
 
-/// Check the type of a value
-pub fn type_of<T>(_: T) -> &'static str {
-    type_name::<T>()
+pub use utils::type_of;
+
+mod utils;
+
+
+#[derive(Debug, StructOpt)]
+#[structopt(name="grrs example", about="An example for command line app.")]
+pub struct Cli {
+    /// the pattern to look for
+    #[structopt(short, long)]
+    pub pattern: String,
+
+    /// the path to the file to read
+    #[structopt(parse(from_os_str))]
+    pub path: PathBuf,
+
+    #[structopt(short, long, parse(from_os_str), default_value="./")]
+    pub output: PathBuf,
 }
