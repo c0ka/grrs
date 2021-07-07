@@ -1,22 +1,28 @@
 use std::io::{BufReader, BufRead};
 use std::fs;
 use std::error;
+use std::process;
+use structopt::StructOpt;
 
 // this is how we use lib.rs
 use grrs::{type_of, Cli};
-use structopt::StructOpt;
 
 /// example:
 /// grrs ./ --pattern test1
 
-
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
-fn main() -> Result<()> {
+fn main() {
     let args = Cli::from_args();
+    if let Err(err) = try_main(args) {
+        eprintln!("{}", err);
+        process::exit(2);
+    }
+    
+}
 
+fn try_main(args: Cli) -> Result<()> {
     let content = fs::File::open(&args.path)?;
-        // .expect("could not read file");
     let reader = BufReader::new(content);
 
     for line in reader.lines() {
