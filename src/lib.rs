@@ -4,6 +4,7 @@ use structopt::StructOpt;
 pub use utils::type_of;
 
 mod utils;
+mod walk;
 
 
 
