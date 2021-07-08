@@ -45,6 +45,7 @@ dependencies = [
 name = "grrs"
 version = "0.1.0"
 dependencies = [
+ "linked-lists",
  "structopt",
 ]
 
@@ -77,6 +78,10 @@ name = "libc"
 version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
+
+[[package]]
+name = "linked-lists"
+version = "0.1.0"
 
 [[package]]
 name = "proc-macro-error"

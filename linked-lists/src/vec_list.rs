@@ -2,26 +2,6 @@ use std::ptr::NonNull;
 use std::marker::PhantomData;
 use std::mem;
 
-use std::any::Any;
-
-
-type List = Vec<Box<dyn Any + Send + Sync>>;
-
-#[cfg(test)]
-mod test {
-  use super::*;
-
-  #[test]
-  pub fn basic() {
-    let mut list : List = vec![];
-    list.push(Box::new(1));
-    list.push(Box::new("test"));
-
-    assert_eq!( list.pop().unwrap().as_ref(), "test");
-    assert_eq!( list.pop().unwrap().as_ref(), &1);
-  }
-
-}
 
 
 pub struct LinkedList<T> {
@@ -38,6 +18,7 @@ struct Node<T> {
   element: T,
 }
 
+#[allow(dead_code)]
 impl<T> Node<T> {
   fn new(element: T) -> Self {
     Node { next: None, prev: None, element }
@@ -48,6 +29,7 @@ impl<T> Node<T> {
   }
 }
 
+#[allow(dead_code)]
 impl<T> LinkedList<T> {
   pub const fn new() -> Self {
     LinkedList { head: None, tail: None, len: 0, marker: PhantomData }
@@ -90,4 +72,14 @@ impl<T> LinkedList<T> {
       }
     }
   }
+}
+
+#[cfg(test)]
+mod test {
+  use super::*;
+
+  #[test]
+  pub fn basic() {
+  }
+
 }

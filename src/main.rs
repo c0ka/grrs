@@ -1,3 +1,6 @@
+/// example:
+/// grrs ./ --pattern test1
+
 use std::io::{BufReader, BufRead};
 use std::fs;
 use std::error;
@@ -6,9 +9,10 @@ use structopt::StructOpt;
 
 // this is how we use lib.rs
 use grrs::{type_of, Cli};
+// a workspace crate
+#[allow(unused)]
+use linked_lists::List;
 
-/// example:
-/// grrs ./ --pattern test1
 
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
