@@ -12,6 +12,4 @@ members = ["linked-lists"]
 [dependencies]
 structopt = "0.3"
 linked-lists = { path = "linked-lists" }
-
-[dev-dependencies]
 walkdir = "2"

@@ -76,7 +76,7 @@ impl<T> LinkedList<T> {
 
 #[cfg(test)]
 mod test {
-  use super::*;
+  // use super::*;
 
   #[test]
   pub fn basic() {
