@@ -1,5 +1,5 @@
-# grrs
-Rep to store rust practicing codes
+# Learning Rust 
+A monorepo to store rust practicing codes
 ## grrs
 [Command line book](https://rust-cli.github.io/book/index.html)
 ## Linked Stack
