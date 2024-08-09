@@ -1,4 +1,6 @@
 # grrs
-
+Rep to store rust practicing codes
+## grrs
+[Command line book](https://rust-cli.github.io/book/index.html)
 ## Linked Stack
-And the practice [Too many lists](https://rust-unofficial.github.io/too-many-lists/third-basics.html)
+[Too many lists](https://rust-unofficial.github.io/too-many-lists/third-basics.html)
